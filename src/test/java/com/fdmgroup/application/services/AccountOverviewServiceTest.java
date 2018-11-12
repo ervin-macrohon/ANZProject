@@ -1,4 +1,5 @@
 package com.fdmgroup.application.services;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
@@ -41,43 +42,44 @@ public class AccountOverviewServiceTest {
 	private AccountsTableRow row2;
 	@Mock
 	List<AccountsTableRow> table;
-	
+
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		list.add(account1);
 		list.add(account2);
 	}
-	
+
 	@Test
 	public void empty_list_of_accounts_returns_empty_json() throws JsonProcessingException {
 		Iterable<Account> emptyList = new ArrayList<>();
 		when(accRepo.findAll()).thenReturn(emptyList);
 		when(mapper.writeValueAsString(emptyList)).thenReturn("[]");
-		
+
 		String accounts = service.getAccounts(time);
 		assertEquals("[]", accounts);
 	}
-	
+
 	@Test
 	public void when_parser_cannot_parse_then_return_null() throws JsonProcessingException {
+		JsonProcessingException exception = mock(JsonProcessingException.class);
 		when(accRepo.findAll()).thenReturn(list);
-		JsonProcessingException e = mock(JsonProcessingException.class);
 		when(accTableFactory.createTable(list, time)).thenReturn(table);
-		doThrow(e).when(mapper).writeValueAsString(table);
-		
+		doThrow(exception).when(mapper).writeValueAsString(table);
+
 		String accounts = service.getAccounts(time);
-		
-		verify(e).printStackTrace();
+
+		verify(exception).printStackTrace();
 		assertNull(accounts);
 	}
-	
+
 	@Test
-	public void not_null_list_of_accounts_calls_create_table_on_factory_and_converts_to_json() throws JsonProcessingException {
+	public void not_null_list_of_accounts_calls_create_table_on_factory_and_converts_to_json()
+			throws JsonProcessingException {
 		when(accRepo.findAll()).thenReturn(list);
 		when(accTableFactory.createTable(list, time)).thenReturn(table);
 		when(mapper.writeValueAsString(table)).thenReturn("[{row1},{row2}]");
-		
+
 		String accounts = service.getAccounts(time);
 
 		verify(accTableFactory).createTable(list, time);

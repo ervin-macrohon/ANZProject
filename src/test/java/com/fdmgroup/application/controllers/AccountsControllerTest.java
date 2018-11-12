@@ -34,16 +34,16 @@ public class AccountsControllerTest {
 	private Clock clock;
 	@Mock
 	private IAccountTransactionService accTrasactionService;
-	private final LocalDate sampleDate = LocalDate.of(2018, 11, 8);
-	private final String sampleJson = "json[something:1]";
-	private final String string = "[{transaction id:1}]";
+	private final LocalDate mockDate = LocalDate.of(2018, 11, 8);
+	private final String accountsJson = "[{\"account_id\":1}]";
+	private final String transactionJson = "[{\"transaction_id\":1}]";
 	
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		mvc = MockMvcBuilders.standaloneSetup(controller)
                 .build();
-		when(clock.getTodaysDate()).thenReturn(sampleDate);
+		when(clock.getTodaysDate()).thenReturn(mockDate);
 	}
 	
 	@Test
@@ -66,19 +66,19 @@ public class AccountsControllerTest {
 	
 	@Test
 	public void account_overview_returns_string_from_account_overview_service() {
-		when(accOverviewService.getAccounts(sampleDate)).thenReturn(sampleJson);
+		when(accOverviewService.getAccounts(mockDate)).thenReturn(accountsJson);
 		String json = controller.getAccountsOverview();
 		
-		verify(accOverviewService).getAccounts(sampleDate);
-		assertEquals(sampleJson, json);
+		verify(accOverviewService).getAccounts(mockDate);
+		assertEquals(accountsJson, json);
 	}
 	
 	@Test
 	public void account_transaction_details_returns_transaction_json_from_service() throws ResourceNotFoundException {
-		when(accTrasactionService.getTransactions(123456789l)).thenReturn(string);
-		String json = controller.getTransactionDetails(123456789);
+		when(accTrasactionService.getTransactions(123456789l)).thenReturn(transactionJson);
+		String json = controller.getTransactionDetails(123456789l);
 		
 		verify(accTrasactionService).getTransactions(123456789l);
-		assertEquals(string, json);
+		assertEquals(transactionJson, json);
 	}
 }

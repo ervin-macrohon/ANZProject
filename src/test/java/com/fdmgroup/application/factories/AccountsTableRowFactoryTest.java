@@ -45,6 +45,7 @@ public class AccountsTableRowFactoryTest {
 		when(account.getCurrency()).thenReturn(mockCurrency);
 		when(mockCurrency.getSymbol()).thenReturn("AUD");
 		when(account.getTransactions()).thenReturn(new HashSet<>());
+		
 		return account;
 	}
 }

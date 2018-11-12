@@ -1,6 +1,7 @@
 package com.fdmgroup.application.repositories;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 import java.sql.Timestamp;
@@ -60,7 +61,7 @@ public class ExtendedTransactionRepositoryTest {
 		List<Transaction> transactions = exTransactionRepo.findByAccountNum(123456789l);
 		
 		assertNotNull(transactions);
-		assertEquals(0, transactions.size());
+		assertTrue(transactions.isEmpty());
 	}
 
 }

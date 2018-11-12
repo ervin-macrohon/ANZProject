@@ -54,19 +54,19 @@ public class AccountTransactionServiceTest {
 	
 	@Test
 	public void when_parser_cannot_parse_then_return_null() throws JsonProcessingException, ResourceNotFoundException {
-		JsonProcessingException e = mock(JsonProcessingException.class);
-		when(exAccRepo.findByAccountNumber(123456678)).thenReturn(mockAccount);
-		doThrow(e).when(mapper).writeValueAsString(table);
+		JsonProcessingException exception = mock(JsonProcessingException.class);
+		when(exAccRepo.findByAccountNumber(123456678l)).thenReturn(mockAccount);
+		doThrow(exception).when(mapper).writeValueAsString(table);
 		stubTable();
 		
-		String transactions = service.getTransactions(123456678);
+		String transactions = service.getTransactions(123456678l);
 		
-		verify(e).printStackTrace();
+		verify(exception).printStackTrace();
 		assertNull(transactions);
 	}
 
 	private void stubTable() {
-		when(exTransRepo.findByAccountNum(123456678)).thenReturn(list);
+		when(exTransRepo.findByAccountNum(123456678l)).thenReturn(list);
 		when(tableFactory.createTable(list)).thenReturn(table);
 	}
 	
@@ -76,9 +76,9 @@ public class AccountTransactionServiceTest {
 		when(exAccRepo.findByAccountNumber(123456678)).thenReturn(mockAccount);
 		when(mapper.writeValueAsString(table)).thenReturn("[{json}]");
 		
-		String transactions = service.getTransactions(123456678);
+		String transactions = service.getTransactions(123456678l);
 		
-		verify(exTransRepo).findByAccountNum(123456678);
+		verify(exTransRepo).findByAccountNum(123456678l);
 		verify(tableFactory).createTable(list);
 		verify(mapper).writeValueAsString(table);
 		assertEquals("[{json}]", transactions);

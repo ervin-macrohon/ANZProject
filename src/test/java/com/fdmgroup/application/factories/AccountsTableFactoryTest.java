@@ -1,6 +1,7 @@
 package com.fdmgroup.application.factories;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -27,6 +28,11 @@ public class AccountsTableFactoryTest {
 	private AccountsTableRow row1;
 	@Mock
 	private AccountsTableRow row2;
+	@Mock
+	private Account account1;
+	@Mock
+	private Account account2;
+	private final List<Account> list = new ArrayList<>();
 	
 	
 	@Before
@@ -45,20 +51,20 @@ public class AccountsTableFactoryTest {
 	
 	@Test
 	public void create_table_with_valid_account_list_returns_tablerows() {
-		List<Account> list = new ArrayList<>();
-		Account account1 = mock(Account.class);
-		list.add(account1);
-		when(rowFactory.createTableRow(account1, date)).thenReturn(row1);
-		Account account2 = mock(Account.class);
-		list.add(account2);
-		when(rowFactory.createTableRow(account2, date)).thenReturn(row2);
+		stubAccount(account1, row1);
+		stubAccount(account2, row2);
 		
 		List<AccountsTableRow> table = tableFactory.createTable(list, date);
 		
 		assertEquals(2, table.size());
 		verify(rowFactory).createTableRow(account1, date);
 		verify(rowFactory).createTableRow(account2, date);
-		assertNotNull(table.get(0));
-		assertNotNull(table.get(1));
+		assertSame(table.get(0), row1);
+		assertSame(table.get(1), row2);
+	}
+
+	private void stubAccount(Account account, AccountsTableRow row) {
+		list.add(account);
+		when(rowFactory.createTableRow(account, date)).thenReturn(row);
 	}
 }
